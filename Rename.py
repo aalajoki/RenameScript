@@ -33,77 +33,137 @@ def main():
 
         # Rename all files
         if option == "1":
-            # WIP: Display the chosen action, ask for confirmation
-            for filename in os.listdir(dir):
-                if filename == os.path.basename(__file__) or os.path.isdir(dir + "/" + filename) == True:
-                    continue
+            # Ask for confirmation
+            print("""
+        You are about to name all files in:
 
-                # Get extension from the file for renaming
-                ext = os.path.splitext(dir + "/" + filename)[1]
-                # Rename file
-                os.rename(dir + "/" + filename, dir + "/" + newname + str(i) + ext)
-                i += 1
+        """ + dir + """
+
+        to  ''""" + newname + "'\n")
+
+            confirm = confirm_query()
+            if (confirm == True):
+
+                for filename in os.listdir(dir):
+                    if filename == os.path.basename(__file__) or os.path.isdir(dir + "/" + filename) == True:
+                        continue
+
+                    # Get extension from the file for renaming
+                    ext = os.path.splitext(dir + "/" + filename)[1]
+                    # Rename file
+                    os.rename(dir + "/" + filename, dir + "/" + newname + str(i) + ext)
+                    i += 1
+                print("Files renamed.")
+
+
+
+
 
         # Rename all folders
         elif option == "2":
-            # WIP: Display the chosen action, ask for confirmation
+            # Ask for confirmation
+            print("""
+        You are about to name all folders in:
 
-            for filename in os.listdir(dir):
-                if filename == os.path.basename(__file__) or os.path.isdir(dir + "/" + filename) == False:
-                    continue
+        """ + dir + """
 
-                ext = os.path.splitext(dir + "/" + filename)[1]
+        to  '""" + newname + "'\n")
 
-                # Rename file and reset counter
-                os.rename(dir + "/" + filename, dir + "/" + newname + str(i) + ext)
-                i += 1
+            confirm = confirm_query()
+            if (confirm == True):
+
+                for filename in os.listdir(dir):
+                    # Ignore the script and non-folders
+                    if filename == os.path.basename(__file__) or os.path.isdir(dir + "/" + filename) == False:
+                        continue
+
+                    # Store old extension
+                    ext = os.path.splitext(dir + "/" + filename)[1]
+
+                    # Rename file
+                    os.rename(dir + "/" + filename, dir + "/" + newname + str(i) + ext)
+                    i += 1
+                print("Files renamed.")
+
+
+
+
 
         # Rename files with specific extensions
         elif option == "3":
             exts = input('Enter all extensions of the files you want to rename. Separate them with spaces (e.g."jpg png"): ')
-            # WIP: Display the chosen action, ask for confirmation
-            exts_list = exts.split()
 
-            # Prepare specified extensions for comparison
-            exts_list = ["." + e.lower() for e in exts_list]
+            # Ask for confirmation
+            print("""
+        You are about to name all files with the following extensions:
+
+        """ + exts +
+        """
+
+        in """ + dir + """
+
+        to '""" + newname + "'\n")
+
+            confirm = confirm_query()
+            if (confirm == True):
+
+                # Split given extensions into a list
+                exts_list = exts.split()
+
+                # Prepare specified extensions for comparison
+                exts_list = ["." + e.lower() for e in exts_list]
 
 
-            for filename in os.listdir(dir):
-                ext = os.path.splitext(dir + "/" + filename)[1]
+                for filename in os.listdir(dir):
+                    # Store old extension
+                    ext = os.path.splitext(dir + "/" + filename)[1]
 
-                # Ignore the script, folders and files without a specified extension
-                if filename == os.path.basename(__file__) or os.path.isdir(dir + "/" + filename) == True or ext.lower() not in exts_list:
-                    continue
+                    # Ignore the script, folders and files without a specified extension
+                    if filename == os.path.basename(__file__) or os.path.isdir(dir + "/" + filename) == True or ext.lower() not in exts_list:
+                        continue
 
-                # Rename file and reset counter
-                os.rename(dir + "/" + filename, dir + "/" + newname + str(i) + ext)
-                i += 1
+                    # Rename file
+                    os.rename(dir + "/" + filename, dir + "/" + newname + str(i) + ext)
+                    i += 1
+                print("Files renamed.")
+
+
+
+
 
         # Rename everything
         elif option == "4":
-            # WIP: Display the chosen action, ask for confirmation
-            for filename in os.listdir(dir):
-                if filename == os.path.basename(__file__):
-                    continue
+            # Ask for confirmation
+            print("""
+        You are about to name everything in:
 
-                ext = os.path.splitext(dir + "/" + filename)[1]
-                os.rename(dir + "/" + filename, dir + "/" + newname + str(i) + ext)
-                i += 1
+        """ + dir + """
+
+        to  '""" + newname + "'\n")
+
+            confirm = confirm_query()
+            if (confirm == True):
+
+                for filename in os.listdir(dir):
+                    # Ignore the script
+                    if filename == os.path.basename(__file__):
+                        continue
+
+                    # Store old extension
+                    ext = os.path.splitext(dir + "/" + filename)[1]
+                    # Rename
+                    os.rename(dir + "/" + filename, dir + "/" + newname + str(i) + ext)
+                    i += 1
+                print("Files renamed.")
 
         # Cancel
         elif option == "5":
             print("Thank you, come again.")
             sys.exit()
 
-        # Debug
-        else:
-            print("Whoopsy daisy")
-
-
-
+        # Reset counter for numbering
         i = 1
-        # Catch errors?
-        print("Files renamed.")
+
         # Do you want to continue? Y/N
         continue_query()
 
@@ -113,6 +173,15 @@ def main():
 
 
 
+def confirm_query():
+    confirm = input("Continue? (Y/N): ")
+    if confirm.lower() == "y":
+        return True
+    elif confirm.lower() == "n":
+        return False
+    else:
+        print("Invalid choice. Please try again.")
+        confirm_query()
 
 
 def dir_query():
@@ -123,8 +192,8 @@ def dir_query():
     else:
         return str(dir)
 
-def options_query():
 
+def options_query():
     option = input("What do you want to rename? (1-5): ")
 
     if option not in ["1","2","3","4","5"]:
@@ -134,9 +203,8 @@ def options_query():
         return option
 
 
-
 def continue_query():
-    continuation = input("Do you want to continue? Y/N: ")
+    continuation = input("Do you want to continue renaming files? (Y/N): ")
     if continuation.lower() == "y":
         pass
     elif continuation.lower() == "n":
@@ -146,8 +214,9 @@ def continue_query():
         print("Invalid choice. Please try again.")
         continue_query()
 
+
 def change_dir_query():
-    change_dir = input("Do you want to change target directory? Y/N: ")
+    change_dir = input("Do you want to change target directory? (Y/N): ")
     if change_dir.lower() == "y":
         return True
     elif change_dir.lower() == "n":
