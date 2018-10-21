@@ -23,13 +23,16 @@ def main():
     (2) Rename all folders
     (3) Rename files with specific extensions
     (4) Rename everything
-    (5) Exit
+    (5) Add file extensions
+    (6) Exit
                 """)
         # 1-5 from user
         option = options_query()
 
-        if (option != "5"):
+        if (option != "5" and option != "6"):
             newname = input("Enter the new name: ")
+        if (option == "5"):
+            new_ext = input("Give the new file extension (e.g. jpg): ")
 
         # Rename all files
         if option == "1":
@@ -43,7 +46,7 @@ def main():
 
             confirm = confirm_query()
             if (confirm == True):
-
+                # Ignore folders and the script
                 for filename in os.listdir(dir):
                     if filename == os.path.basename(__file__) or os.path.isdir(dir + "/" + filename) == True:
                         continue
@@ -156,8 +159,30 @@ def main():
                     i += 1
                 print("Files renamed.")
 
-        # Cancel
+        # Add file extensions
         elif option == "5":
+            print("""
+                    You are about to add the file extension:
+
+                    """ + new_ext + """
+
+                    to files in  ''""" + dir + "'\n")
+
+            confirm = confirm_query()
+            if (confirm == True):
+                # Ignore folders and the script
+                for filename in os.listdir(dir):
+                    if filename == os.path.basename(__file__) or os.path.isdir(dir + "/" + filename) == True:
+                        continue
+
+                    # Rename file
+                    os.rename(dir + "/" + filename, dir + "/" + filename + "." + new_ext.lower())
+                    i += 1
+                print("Files renamed.")
+
+
+        # Cancel
+        elif option == "6":
             print("Thank you, come again.")
             sys.exit()
 
@@ -194,9 +219,9 @@ def dir_query():
 
 
 def options_query():
-    option = input("What do you want to rename? (1-5): ")
+    option = input("What do you want to do? (1-6): ")
 
-    if option not in ["1","2","3","4","5"]:
+    if option not in ["1","2","3","4","5","6"]:
         print("Invalid choice. Please try again.")
         options_query()
     else:
